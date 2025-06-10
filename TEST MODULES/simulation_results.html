@@ -1,0 +1,223 @@
+
+        <html>
+        <head>
+        <style>
+            body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
+            h1 { color: #333; text-align: center; }
+            .flow-path { font-weight: bold; color: #2e8b57; }
+            table {
+                width: 80%;
+                margin: 20px auto;
+                border-collapse: collapse;
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            th, td {
+                padding: 15px;
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            tr:hover {
+                background-color: #f1f1f1;
+                animation: highlight 0.5s ease-in-out;
+            }
+            @keyframes highlight {
+                0% { background-color: #f9f9f9; }
+                100% { background-color: #f1f1f1; }
+            }
+            .flow-path-container {
+                width: 90%;
+                margin: 0 auto;
+                overflow: hidden;
+                white-space: nowrap;
+                background-color: #f0f0f0;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            .flow-path-container p {
+                display: inline-block;
+                padding: 0;
+                margin: 0;
+                animation: marquee 40s linear infinite;  /* Increased duration for slower speed */
+            }
+            @keyframes marquee {
+                0% { transform: translateX(100%); }
+                100% { transform: translateX(-100%); }
+            }
+            h2 {
+                color: #4CAF50; /* Green color for headings */
+                text-align: center;
+                margin-top: 20px;
+            }
+            ul {
+                list-style-type: none; /* Remove default list styling */
+                padding: 0;
+                margin: 0;
+                max-width: 600px; /* Limit width for better readability */
+                margin: 20px auto; /* Center the list */
+                background-color: #f9f9f9; /* Light background for the list */
+                border-radius: 5px; /* Rounded corners */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            }
+            li {
+                padding: 10px;
+                border-bottom: 1px solid #ddd; /* Divider between items */
+                transition: background-color 0.3s; /* Smooth background change */
+            }
+            li:hover {
+                background-color: #e0f7fa; /* Light blue on hover */
+            }
+        </style>
+        <script>
+            function openInFullScreen() {
+                var elem = document.documentElement;  // This will make the entire document go full-screen
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.mozRequestFullScreen) { // Firefox
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { // IE/Edge
+                    elem.msRequestFullscreen();
+                }
+            }
+
+            window.onload = function() {
+                openInFullScreen();  // Trigger full-screen mode as soon as the page loads
+            };
+        </script>
+        </head>
+        <body>
+            <h1>Simulation Results</h1>
+            <div class="flow-path-container">
+                <p class="flow-path">Water Flow Path: InletReservoir_1 → Pipe_InletReservoir_1_to_Valve_1 → Valve_1 → Pipe_Valve_1_to_Turbine_1 → Turbine_1 → Pipe_Turbine_1_to_Manifold_1 → Manifold_1 → Pipe_Manifold_1_to_SurgeTank_1 → SurgeTank_1 → Pipe_SurgeTank_1_to_OutletReservoir_1 → OutletReservoir_1</p>
+            </div>
+            <table>
+                <tr>
+                    <th>Element</th>
+                    <th>Class</th>
+                    <th>Result</th>
+                    <th>Flow Rate (m³/s)</th>
+                    <th>Head Loss (m)</th>
+                    <th> Energy Output (kW)</th>
+                    <th>Flow Conclusion</th>
+                </tr>
+        
+            <tr style="background-color:#A9D0F5">
+                <td>InletReservoir_1</td>
+                <td>InletReservoir</td>
+                <td>10.00 m</td>
+                <td>0.00 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Inlet reservoir level is sufficient.</td>
+            </tr>
+            
+            <tr style="background-color:#F6B3B3">
+                <td>OutletReservoir_1</td>
+                <td>OutletReservoir</td>
+                <td>100.00 m</td>
+                <td>0.00 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Outlet reservoir is ready to receive flow.</td>
+            </tr>
+            
+            <tr style="background-color:#D8BFD8">
+                <td>Valve_1</td>
+                <td>Valve</td>
+                <td>N/A</td>
+                <td>10.00 m³/s</td>
+                <td>10.61 m</td>
+                <td>N/A</td>
+                <td>Valve head loss is 10.61 m.</td>
+            </tr>
+            
+            <tr style="background-color:#FFF0F5">
+                <td>Manifold_1</td>
+                <td>Manifold</td>
+                <td>N/A</td>
+                <td>20.00 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Manifold elevation is 10.0 m and distributing flow effectively.</td>
+            </tr>
+            
+            <tr style="background-color:#D3D3D3">
+                <td>SurgeTank_1</td>
+                <td>SurgeTank</td>
+                <td>N/A</td>
+                <td>15.00 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Surge tank is stabilizing flow with throttle settings: AO=10.0, KIN=10.0, KOUT=10.0.</td>
+            </tr>
+            
+            <tr style="background-color:#F0E68C">
+                <td>Turbine_1</td>
+                <td>Turbine</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>2.00 kW</td>
+                <td>Turbine output is 2.00 kW with efficiency 0.2.</td>
+            </tr>
+            
+            <tr style="background-color:#E0FFFF">
+                <td>Pipe_InletReservoir_1_to_Valve_1</td>
+                <td>Pipe</td>
+                <td>N/A</td>
+                <td>0.40 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Pipe flow rate is 0.40 m³/s.</td>
+            </tr>
+            
+            <tr style="background-color:#E0FFFF">
+                <td>Pipe_Valve_1_to_Turbine_1</td>
+                <td>Pipe</td>
+                <td>N/A</td>
+                <td>0.40 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Pipe flow rate is 0.40 m³/s.</td>
+            </tr>
+            
+            <tr style="background-color:#E0FFFF">
+                <td>Pipe_Turbine_1_to_Manifold_1</td>
+                <td>Pipe</td>
+                <td>N/A</td>
+                <td>1.84 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Pipe flow rate is 1.84 m³/s.</td>
+            </tr>
+            
+            <tr style="background-color:#E0FFFF">
+                <td>Pipe_Manifold_1_to_SurgeTank_1</td>
+                <td>Pipe</td>
+                <td>N/A</td>
+                <td>0.40 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Pipe flow rate is 0.40 m³/s.</td>
+            </tr>
+            
+            <tr style="background-color:#E0FFFF">
+                <td>Pipe_SurgeTank_1_to_OutletReservoir_1</td>
+                <td>Pipe</td>
+                <td>N/A</td>
+                <td>0.40 m³/s</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Pipe flow rate is 0.40 m³/s.</td>
+            </tr>
+            </table><h2>Element Conclusions</h2><ul><li>Inlet reservoir flow rate is critically low, check for blockages.</li><li>Outlet reservoir level is stable.</li><li>Valve head loss is high.</li><li>Manifold may need adjustment due to uneven flow.</li><li>Surge tank is not stabilizing effectively due to flow fluctuations.</li><li>Turbine output is low.</li><li>Pipe flow rate is low.</li><li>Pipe flow rate is low.</li><li>Pipe flow rate is low.</li><li>Pipe flow rate is low.</li><li>Pipe flow rate is low.</li></ul><h2>Final Conclusion</h2><p>Overall, the average energy output is 0.18 kW, the average flow rate is 4.40 m³/s, and the average head loss is 0.96 m. There are 1 elements with high head loss.</p></body></html>

@@ -1,0 +1,20 @@
+{
+    "elements": {
+        "elements": [
+            {
+                "class": "InletReservoir",
+                "name": "InletReservoir_1",
+                "x": 410,
+                "y": 175,
+                "level_h": "",
+                "pipe_z": ""
+            }
+        ],
+        "simulation_properties": {
+            "simulation_time": 10.0,
+            "time_step": 0.01,
+            "gravity": 9.81,
+            "fluid_density": 1000.0
+        }
+    }
+}

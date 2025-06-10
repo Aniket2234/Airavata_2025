@@ -1,0 +1,59 @@
+{
+    "class": "Turbine",
+    "name": "Turbine_1",
+    "x": 724,
+    "y": 259,
+    "ho": "10",
+    "qo": "10",
+    "do": "10",
+    "no": "10",
+    "jh": "10",
+    "efficiency": "0.2",
+    "z_elev": "10",
+    "turbine_type": "Francis 23",
+    "delta_p": "10",
+    "t_load_rej": "10",
+    "dt_ramp": "10",
+    "table_data": [
+        [
+            10.0,
+            10.0
+        ],
+        [
+            10.0,
+            10.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ]
+    ],
+    "tg": "10",
+    "tr": "10",
+    "td": "10",
+    "bp": "10",
+    "governor_image_path": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/governor_diagram.png",
+    "graph_image_paths": {
+        "Francis 23": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis23.png",
+        "Francis 67": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis67.png",
+        "Francis 78": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis78.png",
+        "Kaplan 115": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_kaplan115.png",
+        "hill.xlsx": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_hill.png"
+    }
+}

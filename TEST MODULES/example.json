@@ -1,0 +1,235 @@
+{
+    "elements": {
+        "elements": [
+            {
+                "class": "InletReservoir",
+                "name": "InletReservoir_1",
+                "x": 86,
+                "y": 252,
+                "level_h": "10",
+                "pipe_z": "10"
+            },
+            {
+                "class": "OutletReservoir",
+                "name": "OutletReservoir_1",
+                "x": 1115,
+                "y": 49,
+                "level_h": "100",
+                "level_z": "10"
+            },
+            {
+                "class": "Valve",
+                "name": "Valve_1",
+                "x": 501,
+                "y": 190,
+                "diameter": "10",
+                "loss_coefficient": "3",
+                "loss_factor": "10",
+                "elevation_z": "10",
+                "custom_values": [
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ],
+                    [
+                        "10",
+                        "10"
+                    ]
+                ],
+                "O_C": "0.0",
+                "P_drop": "0.0"
+            },
+            {
+                "class": "Manifold",
+                "name": "Manifold_1",
+                "x": 732,
+                "y": 129,
+                "elev_z": "10",
+                "No_of_sub_pipes": "",
+                "D_of_Subpipe": ""
+            },
+            {
+                "class": "SurgeTank",
+                "name": "SurgeTank_1",
+                "x": 1315,
+                "y": 252,
+                "throttle_ao": "10",
+                "stank_a": "10",
+                "throttle_kin": "10",
+                "throttle_kout": "10",
+                "throttle_el_zo": "10",
+                "Diameter_surge_tank": "",
+                "Current_Water_level": ""
+            },
+            {
+                "class": "Turbine",
+                "name": "Turbine_1",
+                "x": 1373,
+                "y": 416,
+                "ho": "10",
+                "qo": "10",
+                "do": "10",
+                "no": "10",
+                "jh": "10",
+                "efficiency": "0.2",
+                "z_elev": "10",
+                "turbine_type": "Francis 23",
+                "delta_p": "10",
+                "t_load_rej": "10",
+                "dt_ramp": "10",
+                "table_data": [
+                    [
+                        10.0,
+                        10.0
+                    ],
+                    [
+                        10.0,
+                        10.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ]
+                ],
+                "tg": "10",
+                "tr": "10",
+                "td": "10",
+                "bp": "10",
+                "governor_image_path": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/governor_diagram.png",
+                "graph_image_paths": {
+                    "Francis 23": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis23.png",
+                    "Francis 67": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis67.png",
+                    "Francis 78": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis78.png",
+                    "Kaplan 115": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_kaplan115.png",
+                    "hill.xlsx": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_hill.png"
+                }
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_InletReservoir_1_to_Valve_1",
+                "x": 237,
+                "y": 195,
+                "diameter": "1",
+                "length": "1",
+                "celerity": "1",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "Valve_1",
+                "outlet_element": "InletReservoir_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Valve_1_to_Turbine_1",
+                "x": 706,
+                "y": 341,
+                "diameter": "1",
+                "length": "1",
+                "celerity": "11",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "Turbine_1",
+                "outlet_element": "Valve_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Turbine_1_to_Manifold_1",
+                "x": 114,
+                "y": 375,
+                "diameter": "10.",
+                "length": "1",
+                "celerity": "1",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "Manifold_1",
+                "outlet_element": "Turbine_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Manifold_1_to_SurgeTank_1",
+                "x": 1102,
+                "y": 366,
+                "diameter": "1",
+                "length": "1",
+                "celerity": "1",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "SurgeTank_1",
+                "outlet_element": "Manifold_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_SurgeTank_1_to_OutletReservoir_1",
+                "x": 1168,
+                "y": 129,
+                "diameter": "1",
+                "length": "1",
+                "celerity": "1",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "OutletReservoir_1",
+                "outlet_element": "SurgeTank_1"
+            }
+        ],
+        "simulation_properties": {
+            "simulation_time": 20.0,
+            "time_step": 0.01,
+            "gravity": 9.81,
+            "fluid_density": 900.0
+        }
+    }
+}

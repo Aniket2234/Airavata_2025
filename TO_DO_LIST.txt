@@ -1,0 +1,4 @@
+# Add actual connecting pipes 
+# Add left sided tool bar and funtionality.
+# 
+$ control + k then 0, control + k + j

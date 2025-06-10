@@ -1,0 +1,116 @@
+{
+    "elements": {
+        "elements": [
+            {
+                "class": "InletReservoir",
+                "name": "InletReservoir_1",
+                "x": 80,
+                "y": 244,
+                "level_h": "15",
+                "pipe_z": "10"
+            },
+            {
+                "class": "OutletReservoir",
+                "name": "OutletReservoir_1",
+                "x": 1112,
+                "y": 33,
+                "level_h": "5",
+                "level_z": "10"
+            },
+            {
+                "class": "Valve",
+                "name": "Valve_1",
+                "x": 365,
+                "y": 161,
+                "diameter": "0.5",
+                "loss_coefficient": "5"
+            },
+            {
+                "class": "Manifold",
+                "name": "Manifold_1",
+                "x": 1084,
+                "y": 324,
+                "elev_z": "10"
+            },
+            {
+                "class": "SurgeTank",
+                "name": "SurgeTank_1",
+                "x": 1259,
+                "y": 197,
+                "throttle_ao": "10",
+                "throttle_kin": "1"
+            },
+            {
+                "class": "Turbine",
+                "name": "Turbine_1",
+                "x": 723,
+                "y": 248,
+                "ho": "10",
+                "qo": "5",
+                "efficiency": "0.85",
+                "delta_p": "10"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_InletReservoir_1_to_Valve_1",
+                "x": 200,
+                "y": 175,
+                "diameter": "0.3",
+                "length": "50",
+                "manning_n": "0.015",
+                "inlet_element": "InletReservoir_1",
+                "outlet_element": "Valve_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Valve_1_to_Turbine_1",
+                "x": 500,
+                "y": 208,
+                "diameter": "0.3",
+                "length": "30",
+                "manning_n": "0.015",
+                "inlet_element": "Valve_1",
+                "outlet_element": "Turbine_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Turbine_1_to_Manifold_1",
+                "x": 872,
+                "y": 320,
+                "diameter": "0.5",
+                "length": "40",
+                "manning_n": "0.015",
+                "inlet_element": "Turbine_1",
+                "outlet_element": "Manifold_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Manifold_1_to_SurgeTank_1",
+                "x": 1170,
+                "y": 261,
+                "diameter": "0.5",
+                "length": "20",
+                "manning_n": "0.015",
+                "inlet_element": "Manifold_1",
+                "outlet_element": "SurgeTank_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_SurgeTank_1_to_OutletReservoir_1",
+                "x": 1168,
+                "y": 129,
+                "diameter": "0.5",
+                "length": "25",
+                "manning_n": "0.015",
+                "inlet_element": "SurgeTank_1",
+                "outlet_element": "OutletReservoir_1"
+            }
+        ],
+        "simulation_properties": {
+            "simulation_time": 30.0,
+            "time_step": 0.1,
+            "gravity": 9.81,
+            "fluid_density": 1000.0
+        }
+    }
+}

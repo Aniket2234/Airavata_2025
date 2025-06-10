@@ -1,0 +1,73 @@
+{
+    "elements": {
+        "elements": [
+            {
+                "class": "InletReservoir",
+                "name": "InletReservoir_1",
+                "x": 122,
+                "y": 74,
+                "level_h": "10",
+                "pipe_z": "15"
+            },
+            {
+                "class": "OutletReservoir",
+                "name": "OutletReservoir_1",
+                "x": 917,
+                "y": 106,
+                "level_h": "20",
+                "level_z": "25"
+            },
+            {
+                "class": "SurgeTank",
+                "name": "SurgeTank_1",
+                "x": 545,
+                "y": 103,
+                "throttle_ao": "89",
+                "stank_a": "456",
+                "throttle_kin": "54",
+                "throttle_kout": "455",
+                "throttle_el_zo": "65",
+                "Diameter_surge_tank": "458",
+                "Current_Water_level": "68"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_InletReservoir_1_to_SurgeTank_1",
+                "x": 339,
+                "y": 75,
+                "diameter": "56",
+                "length": "54",
+                "celerity": "12",
+                "manning_n": "32",
+                "inlet_h1": "15",
+                "inlet_q1": "78",
+                "nodes_n": "45",
+                "dt_max": "0.0",
+                "inlet_element": "SurgeTank_1",
+                "outlet_element": "InletReservoir_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_SurgeTank_1_to_OutletReservoir_1",
+                "x": 737,
+                "y": 118,
+                "diameter": "45",
+                "length": "64",
+                "celerity": "56",
+                "manning_n": "44",
+                "inlet_h1": "66",
+                "inlet_q1": "58",
+                "nodes_n": "646",
+                "dt_max": "0.2",
+                "inlet_element": "OutletReservoir_1",
+                "outlet_element": "SurgeTank_1"
+            }
+        ],
+        "simulation_properties": {
+            "simulation_time": 10.0,
+            "time_step": 0.01,
+            "gravity": 9.81,
+            "fluid_density": 1000.0
+        }
+    }
+}

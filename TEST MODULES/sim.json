@@ -1,0 +1,151 @@
+{
+    "elements": {
+        "elements": [
+            {
+                "class": "InletReservoir",
+                "name": "InletReservoir_1",
+                "x": 98,
+                "y": 169,
+                "level_h": "10",
+                "pipe_z": "10"
+            },
+            {
+                "class": "Valve",
+                "name": "Valve_1",
+                "x": 531,
+                "y": 244,
+                "diameter": "1",
+                "loss_coefficient": "1",
+                "loss_factor": "1",
+                "elevation_z": "1",
+                "custom_values": [
+                    [
+                        "1",
+                        "1"
+                    ]
+                ]
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_InletReservoir_1_to_Valve_1",
+                "x": 342,
+                "y": 203,
+                "diameter": "1",
+                "length": "1",
+                "celerity": "1",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "10",
+                "inlet_element": "Valve_1",
+                "outlet_element": "InletReservoir_1"
+            },
+            {
+                "class": "OutletReservoir",
+                "name": "OutletReservoir_1",
+                "x": 1246,
+                "y": 245,
+                "level_h": "1",
+                "level_z": "1"
+            },
+            {
+                "class": "Turbine",
+                "name": "Turbine_1",
+                "x": 917,
+                "y": 320,
+                "ho": "1",
+                "qo": "1",
+                "do": "1",
+                "no": "1",
+                "jh": "1",
+                "efficiency": "1",
+                "z_elev": "1",
+                "turbine_type": "Francis 67",
+                "delta_p": "1",
+                "t_load_rej": "1",
+                "dt_ramp": "1",
+                "table_data": [
+                    [
+                        1.0,
+                        1.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ]
+                ],
+                "tg": "0.0",
+                "tr": "0.0",
+                "td": "0.0",
+                "bp": "0.0",
+                "governor_image_path": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/governor_diagram.png",
+                "graph_image_paths": {
+                    "Francis 23": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis23.png",
+                    "Francis 67": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis67.png",
+                    "Francis 78": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_francis78.png",
+                    "Kaplan 115": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_kaplan115.png",
+                    "hill.xlsx": "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/graph_hill.png"
+                }
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Valve_1_to_Turbine_1",
+                "x": 719,
+                "y": 292,
+                "diameter": "1",
+                "length": "11",
+                "celerity": "1",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "Turbine_1",
+                "outlet_element": "Valve_1"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Turbine_1_to_OutletReservoir_1",
+                "x": 1106,
+                "y": 290,
+                "diameter": "1",
+                "length": "1",
+                "celerity": "11",
+                "manning_n": "1",
+                "inlet_h1": "1",
+                "inlet_q1": "1",
+                "nodes_n": "1",
+                "dt_max": "1",
+                "inlet_element": "OutletReservoir_1",
+                "outlet_element": "Turbine_1"
+            }
+        ],
+        "simulation_properties": {
+            "simulation_time": 20.0,
+            "time_step": 0.01,
+            "gravity": 9.81,
+            "fluid_density": 1000.0
+        }
+    }
+}

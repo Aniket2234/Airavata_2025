@@ -1,0 +1,76 @@
+{
+    "elements": {
+        "elements": [
+            {
+                "class": "InletReservoir",
+                "name": "InletReservoir_1",
+                "x": 376,
+                "y": 238,
+                "level_h": "100",
+                "pipe_z": "20"
+            },
+            {
+                "class": "Valve",
+                "name": "Valve_1",
+                "x": 768,
+                "y": 281,
+                "diameter": "10",
+                "loss_coefficient": "10",
+                "loss_factor": "10",
+                "elevation_z": "10",
+                "custom_values": [
+                    [
+                        "10",
+                        "10"
+                    ]
+                ]
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_InletReservoir_1_to_Valve_1",
+                "x": 552,
+                "y": 259,
+                "diameter": "50",
+                "length": "100",
+                "celerity": "12",
+                "manning_n": "12",
+                "inlet_h1": "12",
+                "inlet_q1": "12",
+                "nodes_n": "12",
+                "dt_max": "10",
+                "inlet_element": "Valve_1",
+                "outlet_element": "InletReservoir_1"
+            },
+            {
+                "class": "OutletReservoir",
+                "name": "OutletReservoir_1",
+                "x": 1184,
+                "y": 269,
+                "level_h": "100",
+                "level_z": "20"
+            },
+            {
+                "class": "Pipe",
+                "name": "Pipe_Valve_1_to_OutletReservoir_1",
+                "x": 977,
+                "y": 276,
+                "diameter": "50",
+                "length": "100",
+                "celerity": "10",
+                "manning_n": "10",
+                "inlet_h1": "10",
+                "inlet_q1": "10",
+                "nodes_n": "10",
+                "dt_max": "10",
+                "inlet_element": "OutletReservoir_1",
+                "outlet_element": "Valve_1"
+            }
+        ],
+        "simulation_properties": {
+            "simulation_time": 10.0,
+            "time_step": 0.01,
+            "gravity": 9.81,
+            "fluid_density": 1200.0
+        }
+    }
+}
