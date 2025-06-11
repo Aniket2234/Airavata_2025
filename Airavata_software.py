@@ -18,6 +18,7 @@ import json  # Add this import statement
 import tkinter.filedialog as filedialog
 from tkinter import filedialog, messagebox
 import cv2
+import sys
 from dashboard import Dashboard  # Import the Dashboard class
 
 
@@ -123,7 +124,13 @@ class AiravataSoftware:
 
 
 
-
+    # Add the current directory and JayShreeRam folder to Python path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    jayshreeram_path = os.path.join(current_dir, 'JayShreeRam')
+    if current_dir not in sys.path:
+        sys.path.insert(0, current_dir)
+    if jayshreeram_path not in sys.path:
+        sys.path.insert(0, jayshreeram_path)
 
 
     def INP_out(self):

@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import os
 import io
 import sys
-from JayShreeRam.parser_1 import parse_hydraulic_file
+from parser_1 import parse_hydraulic_file
 from graph_builder import build_graph
 from visualizer import create_network_visualization
 
@@ -20,7 +20,7 @@ st.title("Hydraulic System Network Visualizer")
 default_file_path = os.path.join("attached_assets_parsed", "complete_data.txt")
 
 # Also look for the file in the absolute path if the relative path fails
-absolute_default_path = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Airavata_Project", 
+absolute_default_path = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata", 
                                     "visualization", "attached_assets_parsed", "complete_data.txt")
 
 # Check all possible locations where the file might exist
