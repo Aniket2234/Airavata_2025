@@ -368,7 +368,7 @@ class AiravataSoftware:
                 return
             
             # Create a directory for the visualization in a specific location
-            viz_dir = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Airavata_Project", "visualization")
+            viz_dir = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata", "visualization")
             if not os.path.exists(viz_dir):
                 os.makedirs(viz_dir)
                 
@@ -382,7 +382,7 @@ class AiravataSoftware:
             shutil.copy(file_path, viz_file)
             
             # Path to the app.py script - ensure it has .py extension
-            app_path = os.path.join(viz_dir, "C:/Users/Aniket/Desktop/SIH Software/Airavata_Project/JayShreeRam/app.py")
+            app_path = os.path.join(viz_dir, "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/JayShreeRam/app.py")
             
             # Verify app.py exists
             if not os.path.exists(app_path):
