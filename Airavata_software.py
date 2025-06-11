@@ -14,28 +14,51 @@ from transient_simulation import run_simulation_and_generate_html
 from graphs_generator import run_simulation_and_generate_graphs
 import psutil
 from whiteboard import Whiteboard
-import json  # Add this import statement
+import json
 import tkinter.filedialog as filedialog
 from tkinter import filedialog, messagebox
 import cv2
 import sys
-from dashboard import Dashboard  # Import the Dashboard class
-
+from dashboard import Dashboard
 
 class AiravataSoftware:
     def __init__(self, root):
         self.root = root
+        # Get the directory where the script is located
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.icons_dir = os.path.join(self.script_dir, "Icons")
+        
         self.setup_ui()
-        self.is_fullscreen = False  # Initialize fullscreen state
-        self.root.bind("<F11>", self.toggle_fullscreen)  # Bind F11 key to toggle_fullscreen method
+        self.is_fullscreen = False
+        self.root.bind("<F11>", self.toggle_fullscreen)
+
+    def get_icon_path(self, icon_filename):
+        """Get the full path to an icon file"""
+        return os.path.join(self.icons_dir, icon_filename)
+
+    def load_and_resize_icon(self, icon_filename, size=(32, 32)):
+        """Load and resize an icon using relative path"""
+        try:
+            icon_path = self.get_icon_path(icon_filename)
+            if not os.path.exists(icon_path):
+                print(f"Warning: Icon not found at {icon_path}")
+                # Return a default/placeholder icon or None
+                return None
+            
+            img = Image.open(icon_path)
+            img = img.resize(size, Image.LANCZOS)
+            return ImageTk.PhotoImage(img)
+        except Exception as e:
+            print(f"Error loading icon {icon_filename}: {e}")
+            return None
 
     def toggle_fullscreen(self, event=None):
         """Toggle fullscreen mode."""
-        self.is_fullscreen = not self.is_fullscreen  # Toggle the state
-        self.root.attributes("-fullscreen", self.is_fullscreen)  # Set fullscreen attribute
-        if not self.is_fullscreen:  # If exiting fullscreen, reset to normal size
+        self.is_fullscreen = not self.is_fullscreen
+        self.root.attributes("-fullscreen", self.is_fullscreen)
+        if not self.is_fullscreen:
             self.root.attributes("-fullscreen", False)
-            self.root.geometry("1000x700")  # Reset to original size or desired size
+            self.root.geometry("1000x700")
 
     def setup_ui(self):
         self.root.title("Airavata 2.0")
@@ -47,10 +70,11 @@ class AiravataSoftware:
         self.elements = []
         self.simulation = None
         self.file_manager = FileManager()
-        # Initialize FileManager
+        
         if not self.file_manager:
             print("File manager is not initialized.")
             return
+            
         self.whiteboard = Whiteboard(root)
         self.current_file_name = None
         self.highlighted_element = None
@@ -60,6 +84,7 @@ class AiravataSoftware:
             "gravity": 9.81,
             "fluid_density": 1000.0
         }
+        
         # Create UI components
         self.create_file_label()
         self.create_toolbar()
@@ -74,54 +99,91 @@ class AiravataSoftware:
         toolbar = tk.Frame(self.root, bg="#55cee0", pady=5)
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
-        # Load Icons
-        self.new_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/new_icon.png")
-        self.open_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/open_icon.png")
-        self.save_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/save_icon.png")
-        self.close_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/close_icon.png")
-        self.info_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/info_icon.png")
-        self.export_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/export_icon.png")
-        self.theme_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/theme_icon.png")
-        self.performance_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/performance_icon.png")
-        self.clear_screen_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/clear_screen_icon.png")
-        self.reset_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/reset_icon.png")
-        self.simulation_toolbar_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/S2.png")  # Icon for toolbar button
-        self.simulation_menu_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/S1.png")  # Icon for dropdown menu
-        self.view_graph_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/view_graph_icon.png")
-        self.Hide_label_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/Hide_label_icon.png")
-        self.Show_label_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/Show_label_icon.png")
-        self.Run_icon = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/Run_icon.png")
+        # Load Icons using relative paths
+        self.new_icon = self.load_and_resize_icon("new_icon.png")
+        self.open_icon = self.load_and_resize_icon("open_icon.png")
+        self.save_icon = self.load_and_resize_icon("save_icon.png")
+        self.close_icon = self.load_and_resize_icon("close_icon.png")
+        self.info_icon = self.load_and_resize_icon("info_icon.png")
+        self.export_icon = self.load_and_resize_icon("export_icon.png")
+        self.theme_icon = self.load_and_resize_icon("theme_icon.png")
+        self.performance_icon = self.load_and_resize_icon("performance_icon.png")
+        self.clear_screen_icon = self.load_and_resize_icon("clear_screen_icon.png")
+        self.reset_icon = self.load_and_resize_icon("reset_icon.png")
+        self.simulation_toolbar_icon = self.load_and_resize_icon("S2.png")
+        self.simulation_menu_icon = self.load_and_resize_icon("S1.png")
+        self.view_graph_icon = self.load_and_resize_icon("view_graph_icon.png")
+        self.Hide_label_icon = self.load_and_resize_icon("Hide_label_icon.png")
+        self.Show_label_icon = self.load_and_resize_icon("Show_label_icon.png")
+        self.Run_icon = self.load_and_resize_icon("Run_icon.png")
+        self.INP_request = self.load_and_resize_icon("INP_request.png")
+        self.Final_output_request = self.load_and_resize_icon("Final_output_request.png")
         
-        # Final generation as WHAMO
-        self.INP_request = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/INP_request.png")
-        self.Final_output_request = self.load_and_resize_icon("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/Final_output_request.png")
-        
-        # Add toolbar buttons
-        self.add_toolbar_button(toolbar, self.new_icon, "New File", self.create_new_file)
-        self.add_toolbar_button(toolbar, self.open_icon, "Open File", self.open_file)
-        self.add_toolbar_button(toolbar, self.save_icon, "Save File", self.save_file)
-        self.add_toolbar_button(toolbar, self.close_icon, "Terminate File", self.terminate_file)
-        self.add_toolbar_button(toolbar, self.info_icon, "File Info", self.show_file_info)
-        self.add_toolbar_button(toolbar, self.export_icon, "Export Excel", self.export_to_excel)
-        self.add_toolbar_button(toolbar, self.theme_icon, "Toggle Theme", self.toggle_theme)
-        self.add_toolbar_button(toolbar, self.performance_icon, "Monitor Performance", self.monitor_performance)
-        self.add_toolbar_button(toolbar, self.clear_screen_icon, "Clear Screen", self.clear_screen)
-        self.add_toolbar_button(toolbar, self.reset_icon, "Reset Element Sizes", self.reset_element_sizes)
-        self.add_toolbar_button(toolbar, self.INP_request, "Select INP file", self.INP_out)
-        self.add_toolbar_button(toolbar, self.Final_output_request, "Final output", self.final_out)
+        # Add toolbar buttons (only if icons loaded successfully)
+        if self.new_icon:
+            self.add_toolbar_button(toolbar, self.new_icon, "New File", self.create_new_file)
+        if self.open_icon:
+            self.add_toolbar_button(toolbar, self.open_icon, "Open File", self.open_file)
+        if self.save_icon:
+            self.add_toolbar_button(toolbar, self.save_icon, "Save File", self.save_file)
+        if self.close_icon:
+            self.add_toolbar_button(toolbar, self.close_icon, "Terminate File", self.terminate_file)
+        if self.info_icon:
+            self.add_toolbar_button(toolbar, self.info_icon, "File Info", self.show_file_info)
+        if self.export_icon:
+            self.add_toolbar_button(toolbar, self.export_icon, "Export Excel", self.export_to_excel)
+        if self.theme_icon:
+            self.add_toolbar_button(toolbar, self.theme_icon, "Toggle Theme", self.toggle_theme)
+        if self.performance_icon:
+            self.add_toolbar_button(toolbar, self.performance_icon, "Monitor Performance", self.monitor_performance)
+        if self.clear_screen_icon:
+            self.add_toolbar_button(toolbar, self.clear_screen_icon, "Clear Screen", self.clear_screen)
+        if self.reset_icon:
+            self.add_toolbar_button(toolbar, self.reset_icon, "Reset Element Sizes", self.reset_element_sizes)
+        if self.INP_request:
+            self.add_toolbar_button(toolbar, self.INP_request, "Select INP file", self.INP_out)
+        if self.Final_output_request:
+            self.add_toolbar_button(toolbar, self.Final_output_request, "Final output", self.final_out)
+
         
 
-        # Add the "Simulation" toolbar button with a different icon
-        self.add_toolbar_button(toolbar, self.simulation_toolbar_icon, "Simulation", self.show_dropdown)
+       # Add the "Simulation" toolbar button
+        if self.simulation_toolbar_icon:
+            self.add_toolbar_button(toolbar, self.simulation_toolbar_icon, "Simulation", self.show_dropdown)
 
         # Create a dropdown menu for additional options
         self.dropdown_menu = tk.Menu(self.root, tearoff=0)
-        self.dropdown_menu.add_command(label="Simulation", image=self.simulation_menu_icon, compound=tk.LEFT, command=self.simulation_action)
-        self.dropdown_menu.add_command(label="View Graph", image=self.view_graph_icon, compound=tk.LEFT, command=self.view_graph_action)
-        self.dropdown_menu.add_command(label="Hide label", image=self.Hide_label_icon, compound=tk.LEFT, command=self.Hide_label_action)
-        self.dropdown_menu.add_command(label="Show label", image=self.Show_label_icon, compound=tk.LEFT, command=self.Show_label_action)
-        self.dropdown_menu.add_command(label="Run Simulation", image=self.Run_icon, compound=tk.LEFT, command=self.Run_icon_action)
-
+        
+        # Add menu items with icons (if available)
+        if self.simulation_menu_icon:
+            self.dropdown_menu.add_command(label="Simulation", image=self.simulation_menu_icon, 
+                                         compound=tk.LEFT, command=self.simulation_action)
+        else:
+            self.dropdown_menu.add_command(label="Simulation", command=self.simulation_action)
+            
+        if self.view_graph_icon:
+            self.dropdown_menu.add_command(label="View Graph", image=self.view_graph_icon, 
+                                         compound=tk.LEFT, command=self.view_graph_action)
+        else:
+            self.dropdown_menu.add_command(label="View Graph", command=self.view_graph_action)
+            
+        if self.Hide_label_icon:
+            self.dropdown_menu.add_command(label="Hide label", image=self.Hide_label_icon, 
+                                         compound=tk.LEFT, command=self.Hide_label_action)
+        else:
+            self.dropdown_menu.add_command(label="Hide label", command=self.Hide_label_action)
+            
+        if self.Show_label_icon:
+            self.dropdown_menu.add_command(label="Show label", image=self.Show_label_icon, 
+                                         compound=tk.LEFT, command=self.Show_label_action)
+        else:
+            self.dropdown_menu.add_command(label="Show label", command=self.Show_label_action)
+            
+        if self.Run_icon:
+            self.dropdown_menu.add_command(label="Run Simulation", image=self.Run_icon, 
+                                         compound=tk.LEFT, command=self.Run_icon_action)
+        else:
+            self.dropdown_menu.add_command(label="Run Simulation", command=self.Run_icon_action)
 
 
     # Add the current directory and JayShreeRam folder to Python path
@@ -133,12 +195,13 @@ class AiravataSoftware:
         sys.path.insert(0, jayshreeram_path)
 
 
+
     def INP_out(self):
         """Runs WHAMO.exe with an .INP file and generates output files in the same directory."""
 
         def run_whamo_interactive(inp_file_path):
             try:
-                whamo_path = r"C:\Users\Aniket\Desktop\SIH Software\Main folder Airavata\WHAMO.exe"
+                whamo_path = r"C:\Users\Aniket\Desktop\SIH Software\Airavata_Project\WHAMO.exe"
                 if not os.path.exists(whamo_path):
                     self.console.log("WHAMO executable not found.", level="error")
                     messagebox.showerror("Error", "WHAMO.exe not found. Please verify the path.")
@@ -258,7 +321,7 @@ class AiravataSoftware:
                 return
             
             # Create a directory for the visualization in a specific location
-            viz_dir = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata", "visualization")
+            viz_dir = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Airavata_Project", "visualization")
             if not os.path.exists(viz_dir):
                 os.makedirs(viz_dir)
                 
@@ -272,7 +335,7 @@ class AiravataSoftware:
             shutil.copy(file_path, viz_file)
             
             # Path to the app.py script - ensure it has .py extension
-            app_path = os.path.join(viz_dir, "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/JayShreeRam/app.py")
+            app_path = os.path.join(viz_dir, "C:/Users/Aniket/Desktop/SIH Software/Airavata_Project/JayShreeRam/app.py")
             
             # Verify app.py exists
             if not os.path.exists(app_path):
@@ -518,10 +581,10 @@ class AiravataSoftware:
         """Disable the whiteboard interactions."""
         self.whiteboard_disabled = True
 
-    def load_and_resize_icon(self, icon_path, size=(32, 32)):
-        img = Image.open(icon_path)
-        img = img.resize(size, Image.LANCZOS)
-        return ImageTk.PhotoImage(img) 
+    # def load_and_resize_icon(self, icon_path, size=(32, 32)):
+    #     img = Image.open(icon_path)
+    #     img = img.resize(size, Image.LANCZOS)
+    #     return ImageTk.PhotoImage(img) 
 
     def add_toolbar_button(self, toolbar, icon, tooltip, command):
         # Initial button creation with full 3D appearance
@@ -635,7 +698,7 @@ class AiravataSoftware:
             if not isinstance(elements_data, dict) or 'elements' not in elements_data:
                 raise ValueError("Invalid file structure. Expected a dictionary with an 'elements' key.")
 
-            # Clear existing elements before loading new ones
+            # Clear existing elements before loading new one
             self.whiteboard.clear()
 
             # Load elements into the canvas
@@ -828,10 +891,12 @@ class AiravataSoftware:
 
     def set_app_icon(self):
         """Set the custom app icon at the top-left of the window."""
-        app_icon = Image.open("C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/letter-a.png")  # Use the correct path
-        app_icon = app_icon.resize((32, 32), Image.Resampling.LANCZOS)  # Resize if necessary
-        self.root.iconphoto(True, ImageTk.PhotoImage(app_icon))
-
+        try:
+            app_icon = Image.open(self.get_icon_path("letter-a.png"))
+            app_icon = app_icon.resize((32, 32), Image.Resampling.LANCZOS)
+            self.root.iconphoto(True, ImageTk.PhotoImage(app_icon))
+        except Exception as e:
+            print(f"Could not set app icon: {e}")
 
 
 
@@ -924,7 +989,18 @@ class AiravataSoftware:
 
 
 
-def show_video_splash_screen(root, on_splash_close, video_path):
+# Update the splash screen function to use relative paths as well
+def show_video_splash_screen(root, on_splash_close):
+    # Get the directory where the script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    video_path = os.path.join(script_dir, "Icons", "splash_video.mp4")
+    
+    if not os.path.exists(video_path):
+        print(f"Warning: Splash video not found at {video_path}")
+        # Skip splash screen if video not found
+        on_splash_close(None)
+        return
+    
     splash = Toplevel(root)
     splash.title("Airavata Loading")
     splash.geometry("800x600")
@@ -948,7 +1024,7 @@ def show_video_splash_screen(root, on_splash_close, video_path):
     # Calculate the scaling factor to fit the splash screen
     scale_x = splash_width / original_width
     scale_y = splash_height / original_height
-    scale = max(scale_x, scale_y)  # Use the larger scale to fill the screen
+    scale = max(scale_x, scale_y)
 
     def update_frame():
         ret, frame = cap.read()
@@ -967,18 +1043,17 @@ def show_video_splash_screen(root, on_splash_close, video_path):
             frame_photo = ImageTk.PhotoImage(frame_image)
             splash_label.config(image=frame_photo)
             splash_label.image = frame_photo
-            splash_label.after(10, update_frame)  # Update every 10 ms
+            splash_label.after(10, update_frame)
         else:
             on_splash_close(splash)
 
     splash_label = tk.Label(splash)
     splash_label.pack(fill=tk.BOTH, expand=True)
 
-    root.withdraw()  # Hide the main window during the splash screen
-    update_frame()  # Start updating the video frames
+    root.withdraw()
+    update_frame()
 
-    splash.after(5000, lambda: on_splash_close(splash))  # Close after 2.5 seconds
-
+    splash.after(5000, lambda: on_splash_close(splash))
 
 
 # Show the main dashboard after the splash screen
@@ -1001,13 +1076,11 @@ def show_main_application(root):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")  # Set to full screen size
-    root.state("normal")  # Ensure windowed mode, not fullscreen
-    root.withdraw()  # Hide the main window initially
+    root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
+    root.state("normal")
+    root.withdraw()
 
-    # Start the splash screen and pass the callback for after it finishes
-    show_video_splash_screen(root, on_splash_close, "C:/Users/Aniket/Desktop/SIH Software/Main folder Airavata/Icons/splash_video.mp4")
+    # Start the splash screen
+    show_video_splash_screen(root, on_splash_close)
     
-    # Start the main event loop after the splash and dashboard are handled
     root.mainloop()
-
