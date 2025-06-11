@@ -27,10 +27,14 @@ class AiravataSoftware:
         # Get the directory where the script is located
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.icons_dir = os.path.join(self.script_dir, "Icons")
-        self.whamo_path = os.path.join(self.script_dir, "WHAMO.exe")
-        self.visualization_dir = os.path.join(self.script_dir, "visualization")
-        self.assets_dir = os.path.join(self.visualization_dir, "attached_assets_parsed")
-        self.app_path = os.path.join(self.script_dir, "JayShreeRam", "app.py")
+        
+        # Add the current directory and JayShreeRam folder to Python path
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        jayshreeram_path = os.path.join(current_dir, 'JayShreeRam')
+        if current_dir not in sys.path:
+            sys.path.insert(0, current_dir)
+        if jayshreeram_path not in sys.path:
+            sys.path.insert(0, jayshreeram_path)
         
         self.setup_ui()
         self.is_fullscreen = False
@@ -79,7 +83,7 @@ class AiravataSoftware:
             print("File manager is not initialized.")
             return
             
-        self.whiteboard = Whiteboard(root)
+        self.whiteboard = Whiteboard(self.root)
         self.current_file_name = None
         self.highlighted_element = None
         self.simulation_properties = {
@@ -177,7 +181,41 @@ class AiravataSoftware:
                 highlightbackground="#c0c0c0",
                 highlightcolor="#f0f0f0"
             )
-    
+
+        # Create a dropdown menu for additional options
+        self.dropdown_menu = tk.Menu(self.root, tearoff=0)
+        
+        # Add menu items with icons (if available)
+        if self.simulation_menu_icon:
+            self.dropdown_menu.add_command(label="Simulation", image=self.simulation_menu_icon, 
+                                         compound=tk.LEFT, command=self.simulation_action)
+        else:
+            self.dropdown_menu.add_command(label="Simulation", command=self.simulation_action)
+            
+        if self.view_graph_icon:
+            self.dropdown_menu.add_command(label="View Graph", image=self.view_graph_icon, 
+                                         compound=tk.LEFT, command=self.view_graph_action)
+        else:
+            self.dropdown_menu.add_command(label="View Graph", command=self.view_graph_action)
+            
+        if self.Hide_label_icon:
+            self.dropdown_menu.add_command(label="Hide label", image=self.Hide_label_icon, 
+                                         compound=tk.LEFT, command=self.Hide_label_action)
+        else:
+            self.dropdown_menu.add_command(label="Hide label", command=self.Hide_label_action)
+            
+        if self.Show_label_icon:
+            self.dropdown_menu.add_command(label="Show label", image=self.Show_label_icon, 
+                                         compound=tk.LEFT, command=self.Show_label_action)
+        else:
+            self.dropdown_menu.add_command(label="Show label", command=self.Show_label_action)
+            
+        if self.Run_icon:
+            self.dropdown_menu.add_command(label="Run Simulation", image=self.Run_icon, 
+                                         compound=tk.LEFT, command=self.Run_icon_action)
+        else:
+            self.dropdown_menu.add_command(label="Run Simulation", command=self.Run_icon_action)
+
     def back_to_dashboard(self):
         """Return to the dashboard screen from the main application."""
         try:
@@ -205,9 +243,13 @@ class AiravataSoftware:
 
         def run_whamo_interactive(inp_file_path):
             try:
-                if not os.path.exists(self.whamo_path):
-                    self.console.log("WHAMO executable not found.", level="error")
-                    messagebox.showerror("Error", "WHAMO.exe not found. Please verify the path.")
+                # Use relative path - WHAMO.exe should be in the same directory as the script
+                whamo_path = os.path.join(self.script_dir, "WHAMO.exe")
+                
+                # Check if WHAMO.exe exists in the script directory
+                if not os.path.exists(whamo_path):
+                    self.console.log(f"WHAMO executable not found at: {whamo_path}", level="error")
+                    messagebox.showerror("Error", f"WHAMO.exe not found in the project directory.\nExpected location: {whamo_path}\nPlease ensure WHAMO.exe is in the same folder as your Python script.")
                     return
 
                 filename_only = os.path.splitext(os.path.basename(inp_file_path))[0]
@@ -243,15 +285,17 @@ class AiravataSoftware:
                 whamo_input = f"{filename_only}\r\n{out_name}\r\n{plt_name}\r\n{tab_name}\r\n"
 
                 self.console.log(f"Running WHAMO on: {inp_file_path}", level="info")
+                self.console.log(f"WHAMO executable path: {whamo_path}", level="info")
 
                 process = subprocess.Popen(
-                    [self.whamo_path],
+                    [whamo_path],
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
                     encoding='utf-8',
-                    universal_newlines=True
+                    universal_newlines=True,
+                    cwd=folder  # Set working directory to the folder containing the INP file
                 )
 
                 stdout, stderr = process.communicate(input=whamo_input)
@@ -299,6 +343,7 @@ class AiravataSoftware:
             self.console.log(f"Error selecting INP file: {str(e)}", level="error")
             messagebox.showerror("Error", f"Failed to select .INP file: {str(e)}")
 
+
     def final_out(self):
         """Launches the hydraulic system visualization in Streamlit after selecting a file"""
         try:
@@ -322,21 +367,28 @@ class AiravataSoftware:
                 self.console.log(f"Selected file does not exist: {file_path}", level="error")
                 return
             
-            # Create directories if they don't exist
-            if not os.path.exists(self.visualization_dir):
-                os.makedirs(self.visualization_dir)
+            # Create a directory for the visualization in a specific location
+            viz_dir = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Airavata_Project", "visualization")
+            if not os.path.exists(viz_dir):
+                os.makedirs(viz_dir)
                 
-            if not os.path.exists(self.assets_dir):
-                os.makedirs(self.assets_dir)
+            # Create the data directory
+            assets_dir = os.path.join(viz_dir, "attached_assets_parsed")
+            if not os.path.exists(assets_dir):
+                os.makedirs(assets_dir)
             
             # Copy the selected file to the visualization directory
-            viz_file = os.path.join(self.assets_dir, "complete_data.txt")
+            viz_file = os.path.join(assets_dir, "complete_data.txt")
             shutil.copy(file_path, viz_file)
             
+            # Path to the app.py script - ensure it has .py extension
+            app_path = os.path.join(viz_dir, "C:/Users/Aniket/Desktop/SIH Software/Airavata_Project/JayShreeRam/app.py")
+            
             # Verify app.py exists
-            if not os.path.exists(self.app_path):
-                messagebox.showerror("Error", f"Visualization file not found: {self.app_path}\nPlease make sure app.py exists in the visualization directory.")
-                self.console.log(f"Visualization file not found: {self.app_path}", level="error")
+            if not os.path.exists(app_path):
+                # If app.py doesn't exist, show an error message
+                messagebox.showerror("Error", f"Visualization file not found: {app_path}\nPlease make sure app.py exists in the visualization directory.")
+                self.console.log(f"Visualization file not found: {app_path}", level="error")
                 return
             
             # Show processing message
@@ -369,11 +421,14 @@ class AiravataSoftware:
                 try:
                     update_progress("Starting Streamlit server...")
                     
+                    # Make sure we use the full path with quotes to handle spaces
+                    app_full_path = os.path.abspath(app_path)
+                    
                     # Debug output to console - helps troubleshoot
-                    self.console.log(f"Launching Streamlit with: {self.app_path}", level="info")
+                    self.console.log(f"Launching Streamlit with: {app_full_path}", level="info")
                     
                     # Construct the command with proper quoting
-                    command = f'python -m streamlit run "{self.app_path}" --server.port 5000'
+                    command = f'python -m streamlit run "{app_full_path}" --server.port 5000'
                     
                     # Run the command
                     process = subprocess.Popen(command, shell=True)
@@ -511,7 +566,7 @@ class AiravataSoftware:
         """Shows the labels of all elements on the whiteboard again."""
         for element in self.whiteboard.elements:
             if hasattr(element, "label_id") and element.label_id is not None:
-                self.whiteboard.canvas.itemconfig(element.label_id, state="zoomed")
+                self.whiteboard.canvas.itemconfig(element.label_id, state="normal")
         self.console.log("Labels shown successfully.", level="info")
 
     def Run_icon_action(self):
@@ -572,6 +627,11 @@ class AiravataSoftware:
     def disable_whiteboard(self):
         """Disable the whiteboard interactions."""
         self.whiteboard_disabled = True
+
+    # def load_and_resize_icon(self, icon_path, size=(32, 32)):
+    #     img = Image.open(icon_path)
+    #     img = img.resize(size, Image.LANCZOS)
+    #     return ImageTk.PhotoImage(img) 
 
     def add_toolbar_button(self, toolbar, icon, tooltip, command):
         # Initial button creation with full 3D appearance
@@ -1045,43 +1105,26 @@ def show_video_splash_screen(root, on_splash_close):
 
 # Show the main dashboard after the splash screen
 def show_dashboard_screen(root):
-    """Show the dashboard screen with proper callback to main app"""
-    # Clear any existing widgets
-    for widget in root.winfo_children():
-        widget.destroy()
-    
-    # Create new dashboard instance with callback
-    from dashboard import Dashboard
-    dashboard = Dashboard(root, lambda: show_main_application(root))
-    return dashboard
+    go_to_main_callback = lambda: show_main_application(root)
+    dashboard = Dashboard(root, go_to_main_callback)  # Pass the callback as an argument
 
 # Function that will be triggered when the splash screen is closed
 def on_splash_close(splash):
     splash.destroy()  # Close splash screen
     root.deiconify()  # Show the main window
-    root.geometry("1200x800")  # Set consistent size for dashboard
-    root.state('zoomed')
+    root.state("zoomed")  # Maximize the window after the splash screen
     show_dashboard_screen(root)  # Show the dashboard after splash screen
 
 # Function to show the main application when the button is clicked on the dashboard
 def show_main_application(root):
-    """Show the main application from dashboard"""
-    # Clear the dashboard screen
     for widget in root.winfo_children():
-        widget.destroy()
-    
-    # Set window size before creating main app
-    root.geometry("1000x700")  # Match AiravataSoftware's preferred size
-    root.state('zoomed')
-    
-    # Initialize the main application
-    app = AiravataSoftware(root)
-    return app
+        widget.destroy()  # Clear the dashboard screen
+    app = AiravataSoftware(root)  # Initialize the main application
 
 if __name__ == "__main__":
     root = tk.Tk()
     root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
-    root.state("zoomed")
+    root.state("normal")
     root.withdraw()
 
     # Start the splash screen
