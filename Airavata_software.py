@@ -27,6 +27,10 @@ class AiravataSoftware:
         # Get the directory where the script is located
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.icons_dir = os.path.join(self.script_dir, "Icons")
+        self.whamo_path = os.path.join(self.script_dir, "WHAMO.exe")
+        self.visualization_dir = os.path.join(self.script_dir, "visualization")
+        self.assets_dir = os.path.join(self.visualization_dir, "attached_assets_parsed")
+        self.app_path = os.path.join(self.script_dir, "JayShreeRam", "app.py")
         
         self.setup_ui()
         self.is_fullscreen = False
@@ -118,8 +122,9 @@ class AiravataSoftware:
         self.Run_icon = self.load_and_resize_icon("Run_icon.png")
         self.INP_request = self.load_and_resize_icon("INP_request.png")
         self.Final_output_request = self.load_and_resize_icon("Final_output_request.png")
-        
-        # Add toolbar buttons (only if icons loaded successfully)
+        self.Back_to_dashboard = self.load_and_resize_icon("Back_to_dashboard.png")
+
+        # Add all other buttons first (left side)
         if self.new_icon:
             self.add_toolbar_button(toolbar, self.new_icon, "New File", self.create_new_file)
         if self.open_icon:
@@ -145,64 +150,62 @@ class AiravataSoftware:
         if self.Final_output_request:
             self.add_toolbar_button(toolbar, self.Final_output_request, "Final output", self.final_out)
 
-        
-
-       # Add the "Simulation" toolbar button
+        # Add the "Simulation" toolbar button
         if self.simulation_toolbar_icon:
             self.add_toolbar_button(toolbar, self.simulation_toolbar_icon, "Simulation", self.show_dropdown)
 
-        # Create a dropdown menu for additional options
-        self.dropdown_menu = tk.Menu(self.root, tearoff=0)
-        
-        # Add menu items with icons (if available)
-        if self.simulation_menu_icon:
-            self.dropdown_menu.add_command(label="Simulation", image=self.simulation_menu_icon, 
-                                         compound=tk.LEFT, command=self.simulation_action)
-        else:
-            self.dropdown_menu.add_command(label="Simulation", command=self.simulation_action)
+        # Add the "Back to Dashboard" button LAST (rightmost)
+        if self.Back_to_dashboard:
+            # Create a separator frame to push the button to the right
+            separator = tk.Frame(toolbar, bg="#55cee0", width=20)
+            separator.pack(side=tk.LEFT, expand=True, fill=tk.X)
             
-        if self.view_graph_icon:
-            self.dropdown_menu.add_command(label="View Graph", image=self.view_graph_icon, 
-                                         compound=tk.LEFT, command=self.view_graph_action)
-        else:
-            self.dropdown_menu.add_command(label="View Graph", command=self.view_graph_action)
+            # Add the button with RIGHT packing
+            btn = tk.Button(
+                toolbar,
+                image=self.Back_to_dashboard,
+                relief=tk.RAISED,
+                bd=3,
+                command=self.back_to_dashboard,
+                highlightthickness=0,
+                activebackground="#d9d9d9"
+            )
+            btn.pack(side=tk.RIGHT, padx=2, pady=2)
+            btn.config(
+                relief=tk.RAISED,
+                bd=3,
+                highlightbackground="#c0c0c0",
+                highlightcolor="#f0f0f0"
+            )
+    
+    def back_to_dashboard(self):
+        """Return to the dashboard screen from the main application."""
+        try:
+            # Clear the current application
+            for widget in self.root.winfo_children():
+                widget.destroy()
             
-        if self.Hide_label_icon:
-            self.dropdown_menu.add_command(label="Hide label", image=self.Hide_label_icon, 
-                                         compound=tk.LEFT, command=self.Hide_label_action)
-        else:
-            self.dropdown_menu.add_command(label="Hide label", command=self.Hide_label_action)
+            # Reset window state to match dashboard's preferred size
+            self.root.state('zoomed')
+            self.root.geometry("1200x800")  # Set to dashboard's preferred size
             
-        if self.Show_label_icon:
-            self.dropdown_menu.add_command(label="Show label", image=self.Show_label_icon, 
-                                         compound=tk.LEFT, command=self.Show_label_action)
-        else:
-            self.dropdown_menu.add_command(label="Show label", command=self.Show_label_action)
+            # Recreate the dashboard
+            from dashboard import Dashboard
+            Dashboard(self.root, lambda: show_main_application(self.root))
             
-        if self.Run_icon:
-            self.dropdown_menu.add_command(label="Run Simulation", image=self.Run_icon, 
-                                         compound=tk.LEFT, command=self.Run_icon_action)
-        else:
-            self.dropdown_menu.add_command(label="Run Simulation", command=self.Run_icon_action)
-
-
-    # Add the current directory and JayShreeRam folder to Python path
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    jayshreeram_path = os.path.join(current_dir, 'JayShreeRam')
-    if current_dir not in sys.path:
-        sys.path.insert(0, current_dir)
-    if jayshreeram_path not in sys.path:
-        sys.path.insert(0, jayshreeram_path)
-
-
+            # Don't try to log to console after destroying it
+            return
+            
+        except Exception as e:
+            # Show error message directly since console is gone
+            messagebox.showerror("Error", f"Failed to return to dashboard: {str(e)}")
 
     def INP_out(self):
         """Runs WHAMO.exe with an .INP file and generates output files in the same directory."""
 
         def run_whamo_interactive(inp_file_path):
             try:
-                whamo_path = r"C:\Users\Aniket\Desktop\SIH Software\Airavata_Project\WHAMO.exe"
-                if not os.path.exists(whamo_path):
+                if not os.path.exists(self.whamo_path):
                     self.console.log("WHAMO executable not found.", level="error")
                     messagebox.showerror("Error", "WHAMO.exe not found. Please verify the path.")
                     return
@@ -242,7 +245,7 @@ class AiravataSoftware:
                 self.console.log(f"Running WHAMO on: {inp_file_path}", level="info")
 
                 process = subprocess.Popen(
-                    [whamo_path],
+                    [self.whamo_path],
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
@@ -296,7 +299,6 @@ class AiravataSoftware:
             self.console.log(f"Error selecting INP file: {str(e)}", level="error")
             messagebox.showerror("Error", f"Failed to select .INP file: {str(e)}")
 
-
     def final_out(self):
         """Launches the hydraulic system visualization in Streamlit after selecting a file"""
         try:
@@ -320,28 +322,21 @@ class AiravataSoftware:
                 self.console.log(f"Selected file does not exist: {file_path}", level="error")
                 return
             
-            # Create a directory for the visualization in a specific location
-            viz_dir = os.path.join("C:/Users/Aniket/Desktop/SIH Software/Airavata_Project", "visualization")
-            if not os.path.exists(viz_dir):
-                os.makedirs(viz_dir)
+            # Create directories if they don't exist
+            if not os.path.exists(self.visualization_dir):
+                os.makedirs(self.visualization_dir)
                 
-            # Create the data directory
-            assets_dir = os.path.join(viz_dir, "attached_assets_parsed")
-            if not os.path.exists(assets_dir):
-                os.makedirs(assets_dir)
+            if not os.path.exists(self.assets_dir):
+                os.makedirs(self.assets_dir)
             
             # Copy the selected file to the visualization directory
-            viz_file = os.path.join(assets_dir, "complete_data.txt")
+            viz_file = os.path.join(self.assets_dir, "complete_data.txt")
             shutil.copy(file_path, viz_file)
             
-            # Path to the app.py script - ensure it has .py extension
-            app_path = os.path.join(viz_dir, "C:/Users/Aniket/Desktop/SIH Software/Airavata_Project/JayShreeRam/app.py")
-            
             # Verify app.py exists
-            if not os.path.exists(app_path):
-                # If app.py doesn't exist, show an error message
-                messagebox.showerror("Error", f"Visualization file not found: {app_path}\nPlease make sure app.py exists in the visualization directory.")
-                self.console.log(f"Visualization file not found: {app_path}", level="error")
+            if not os.path.exists(self.app_path):
+                messagebox.showerror("Error", f"Visualization file not found: {self.app_path}\nPlease make sure app.py exists in the visualization directory.")
+                self.console.log(f"Visualization file not found: {self.app_path}", level="error")
                 return
             
             # Show processing message
@@ -374,14 +369,11 @@ class AiravataSoftware:
                 try:
                     update_progress("Starting Streamlit server...")
                     
-                    # Make sure we use the full path with quotes to handle spaces
-                    app_full_path = os.path.abspath(app_path)
-                    
                     # Debug output to console - helps troubleshoot
-                    self.console.log(f"Launching Streamlit with: {app_full_path}", level="info")
+                    self.console.log(f"Launching Streamlit with: {self.app_path}", level="info")
                     
                     # Construct the command with proper quoting
-                    command = f'python -m streamlit run "{app_full_path}" --server.port 5000'
+                    command = f'python -m streamlit run "{self.app_path}" --server.port 5000'
                     
                     # Run the command
                     process = subprocess.Popen(command, shell=True)
@@ -519,7 +511,7 @@ class AiravataSoftware:
         """Shows the labels of all elements on the whiteboard again."""
         for element in self.whiteboard.elements:
             if hasattr(element, "label_id") and element.label_id is not None:
-                self.whiteboard.canvas.itemconfig(element.label_id, state="normal")
+                self.whiteboard.canvas.itemconfig(element.label_id, state="zoomed")
         self.console.log("Labels shown successfully.", level="info")
 
     def Run_icon_action(self):
@@ -580,11 +572,6 @@ class AiravataSoftware:
     def disable_whiteboard(self):
         """Disable the whiteboard interactions."""
         self.whiteboard_disabled = True
-
-    # def load_and_resize_icon(self, icon_path, size=(32, 32)):
-    #     img = Image.open(icon_path)
-    #     img = img.resize(size, Image.LANCZOS)
-    #     return ImageTk.PhotoImage(img) 
 
     def add_toolbar_button(self, toolbar, icon, tooltip, command):
         # Initial button creation with full 3D appearance
@@ -1058,26 +1045,43 @@ def show_video_splash_screen(root, on_splash_close):
 
 # Show the main dashboard after the splash screen
 def show_dashboard_screen(root):
-    go_to_main_callback = lambda: show_main_application(root)
-    dashboard = Dashboard(root, go_to_main_callback)  # Pass the callback as an argument
+    """Show the dashboard screen with proper callback to main app"""
+    # Clear any existing widgets
+    for widget in root.winfo_children():
+        widget.destroy()
+    
+    # Create new dashboard instance with callback
+    from dashboard import Dashboard
+    dashboard = Dashboard(root, lambda: show_main_application(root))
+    return dashboard
 
 # Function that will be triggered when the splash screen is closed
 def on_splash_close(splash):
     splash.destroy()  # Close splash screen
     root.deiconify()  # Show the main window
-    root.state("zoomed")  # Maximize the window after the splash screen
+    root.geometry("1200x800")  # Set consistent size for dashboard
+    root.state('zoomed')
     show_dashboard_screen(root)  # Show the dashboard after splash screen
 
 # Function to show the main application when the button is clicked on the dashboard
 def show_main_application(root):
+    """Show the main application from dashboard"""
+    # Clear the dashboard screen
     for widget in root.winfo_children():
-        widget.destroy()  # Clear the dashboard screen
-    app = AiravataSoftware(root)  # Initialize the main application
+        widget.destroy()
+    
+    # Set window size before creating main app
+    root.geometry("1000x700")  # Match AiravataSoftware's preferred size
+    root.state('zoomed')
+    
+    # Initialize the main application
+    app = AiravataSoftware(root)
+    return app
 
 if __name__ == "__main__":
     root = tk.Tk()
     root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
-    root.state("normal")
+    root.state("zoomed")
     root.withdraw()
 
     # Start the splash screen

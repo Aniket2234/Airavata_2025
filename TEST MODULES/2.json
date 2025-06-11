@@ -4,8 +4,8 @@
             {
                 "class": "InletReservoir",
                 "name": "InletReservoir_1",
-                "x": 703,
-                "y": 228,
+                "x": 493,
+                "y": 174,
                 "level_h": "10",
                 "pipe_z": "15"
             }
